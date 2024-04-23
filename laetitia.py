@@ -55,6 +55,7 @@ class Bot(object):
         """See class docstring for details."""
 
         self.nick = nick
+        self.url = url
         self.room = room
         self.start_time = time.time()
         self.pause = False
@@ -67,13 +68,13 @@ class Bot(object):
         self.regexes = kwargs.get('regexes', {})
 
         self.session = ws.WebSocket()
-        self.connect(nick, url.format(self.room))
+        self.connect()
 
-    def connect(self, nick, url):
-        self.session.connect(url)
+    def connect(self):
+        self.session.connect(self.url.format(self.room))
         self.log('connect')
 
-        self.set_nick(nick)
+        self.set_nick(self.nick)
 
     def set_nick(self, nick):
         """Sets the nick.
@@ -203,7 +204,7 @@ class Bot(object):
                     current_time, self.nick, self.room).encode('utf-8'))[2:-1])
         elif mode == 'reconnect':
             print(
-                repr('[{0}][{1}] Attempting to reconnect in {3}s.'.format(
+                repr('[{0}][{1}] Attempting to reconnect in {2}s.'.format(
                     current_time, self.nick, interval).encode('utf-8'))[2:-1])
 
     def receive(self):
@@ -296,6 +297,7 @@ class Bot(object):
                 self.log('receive', incoming['data']['content'])
                 self.post('/me is now exiting.', incoming['data']['id'])
                 self.session.close()
+                exit()
 
             for regex, response in self.regexes.items():
                 if re.search(regex, incoming['data']['content']):
