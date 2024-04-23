@@ -284,12 +284,6 @@ class Bot(object):
                 if re.search(regex, incoming['data']['content']):
                     self.log('receive', incoming['data']['content'])
 
-                    result = response(re.search(
-                        regex, incoming['data']['content']).groups(),
+                    response(self, re.findall(
+                        regex, incoming['data']['content']),
                         incoming['data'])
-
-                    if isinstance(result, list):
-                        for message in result:
-                            self.post(message, incoming['data']['id'])
-                    else:
-                        self.post(result, incoming['data']['id'])
