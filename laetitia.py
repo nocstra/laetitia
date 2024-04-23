@@ -67,11 +67,22 @@ class Bot(object):
         self.regexes = kwargs.get('regexes', {})
 
         self.session = ws.WebSocket()
-        self.connect(url.format(self.room))
+        self.connect(nick, url.format(self.room))
 
-    def connect(self, url):
+    def connect(self, nick, url):
         self.session.connect(url)
         self.log('connect')
+
+        self.set_nick(nick)
+
+    def set_nick(self, nick):
+        """Sets the nick.
+
+        Arguments:
+            nick (str): the nick to set
+        """
+
+        self.nick = nick
 
         self.session.send(
             json.dumps({
@@ -80,6 +91,8 @@ class Bot(object):
                     'name': self.nick
                 }
             }))
+        
+        self.log('nick')
 
     def post(self, message, parent = ''):
         """Posts a message in the room.
@@ -172,6 +185,10 @@ class Bot(object):
             print(
                 repr('[{0}][{1}] Connected to &{2}.'.format(
                     current_time, self.nick, self.room).encode('utf-8'))[2:-1])
+        elif mode == 'nick':
+            print(
+                repr('[{0}][{1}] Set nick to {1}.'.format(
+                    current_time, self.nick).encode('utf-8'))[2:-1])
         elif mode == 'send':
             print(
                 repr('[{0}][{1}] Sent message: {2!r}'.format(
