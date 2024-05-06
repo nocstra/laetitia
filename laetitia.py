@@ -211,9 +211,9 @@ class Bot(object):
         """Function that recieves packets from Euphoria and employs the
         botrulez and the regexes specified."""
 
-        if self.session.connected:
+        try:
             incoming = json.loads(self.session.recv())
-        else:
+        except ws._exceptions.WebSocketConnectionClosedException:
             self.log('disconnect')
 
             interval = 0
@@ -224,8 +224,8 @@ class Bot(object):
 
                 try:
                     self.connect()
-                except ws._exceptions.WebSocketException:
-                    interval += 30
+                except ws._exceptions.WebSocketException as e:
+                    print(e)
                     continue
                 else:
                     break
