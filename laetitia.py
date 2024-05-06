@@ -225,6 +225,7 @@ class Bot(object):
                 try:
                     self.connect()
                 except ws._exceptions.WebSocketException as e:
+                    interval += 30
                     print(e)
                     continue
                 else:
