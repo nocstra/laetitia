@@ -229,6 +229,7 @@ class Bot(object):
                     print(e)
                     continue
                 else:
+                    incoming = json.loads(self.session.recv())
                     break
             else:
                 exit()
